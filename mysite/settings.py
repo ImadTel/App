@@ -32,12 +32,26 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'polls',
-    'django.contrib.admin',
+    ## django all auth reqs
     'django.contrib.auth',
+    'django.contrib.messages',
+    'django.contrib.sites',
+
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+
+
+    'polls',
+    'ecommerce',
+
+    'django.contrib.admin',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
+
     'django.contrib.staticfiles',
 ]
 
@@ -69,6 +83,20 @@ TEMPLATES = [
     },
 ]
 
+
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]
+
+
+
+
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
@@ -77,16 +105,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'djangoAppDb',
-        'USER': 'admin',
-        'PASSWORD': 'imadtel',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
 
 
 # Password validation
@@ -135,7 +157,7 @@ STATICFILES_DIRS = [
 
 
 
-
+SITE_ID = 1
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

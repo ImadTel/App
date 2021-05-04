@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>here are the products we have</h1>
+{% for item in products_list %}
+
+
+<h3> {{item.id}} -- {{item.title}}</h3>
+
+{% endfor %}
+
+{% endblock content %}
