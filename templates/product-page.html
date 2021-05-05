@@ -40,10 +40,10 @@
 
                 {% if object.discout_price %}
                <span class="mr-1">
-                <del>$200</del>
+                <del>{{object.discount_price}}$</del>
                 </span>
                {% endif %}
-              <span>$100</span>
+              <span>{{object.price}}$</span>
 
 
             </p>
@@ -53,14 +53,20 @@
             <p>
               {{object.description}}</p>
 
-            <form class="d-flex justify-content-left">
+            <form class="d-flex justify-content-left"   method="POST"  action="{{object.get_add_to_cart_url }}"   >  {% csrf_token %}
               <!-- Default input -->
-              <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
+              <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px" name="quantity">
               <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
                 <i class="fas fa-shopping-cart ml-1"></i>
               </button>
 
             </form>
+            <a  href="{{object.get_add_to_cart_url }}">
+            <button class="btn btn-primary btn-md my-0 p" >Add to 
+              <i class="fas fa-shopping-cart ml-1"></i>
+            </button>
+          </a>
+
 
           </div>
           <!--Content-->

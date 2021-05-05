@@ -20,7 +20,7 @@ LABELS = [
 
 class Product(models.Model):
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=500)
+    description = models.TextField(max_length=500)
     category = models.CharField(choices=CATEGORIES, max_length=2)
     price = models.FloatField(default=0)
     discout_price = models.FloatField(null=True,blank=True)
@@ -35,18 +35,30 @@ class Product(models.Model):
             'slug' : self.slug,
         })
 
+    def get_add_to_cart_url(self):
+        return reverse('ecommerce:add_to_cart',kwargs ={
+            'slug' : self.slug,
+        })
 
 
-class OrderProduct(models.Model):
-    product = models.ForeignKey(Product,on_delete=models.CASCADE)
 
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-    products = models.ManyToManyField(OrderProduct)
     order_date = models.DateTimeField(auto_now_add=True)
     orderedDate = models.DateTimeField()
     ordered = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
+
+
+
+class OrderProduct(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.product.title
+
+
