@@ -40,6 +40,12 @@ class Product(models.Model):
             'slug' : self.slug,
         })
 
+    
+    def get_remove_from_cart_url(self):
+        return reverse('ecommerce:remove_from_cart',kwargs={
+            'slug':self.slug,
+        })
+
 
 
 
