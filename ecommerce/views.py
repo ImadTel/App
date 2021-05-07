@@ -36,26 +36,14 @@ class productView(ListView):
 class productDetail(DetailView):
     model=Product
     template_name = "product-page.html"
+    
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        productsInCart = OrderProduct.objects.filter(order=Order.objects.get(user=self.request.user,ordered=False)).count()
+        context['productsNumber'] = productsInCart
+        return context
 
-
-def add_to_card(request,slug):
-    product=get_object_or_404(Product,slug=slug)
-    order_product = OrderProduct.objects.create(product=product.pk,quatity=request.quantity)
-
-    order_qs = Order.objects.filter(user=request.user,ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.products.filter(product__slug=product.slug).exists():
-            order_product +=1
-            order_product.save()
-        else:
-            order.products.add(order_product)
-    else:
-        order = Order.objects.create(user=request.user,order_date=timezone.now())
-        order.products.add(order_product)
-        order.save()
-    return redirect("ecommerce:productDetail", slug=slug)
-
+        
 
 def add_to_cart(request,slug):
     product=get_object_or_404(Product,slug=slug)
