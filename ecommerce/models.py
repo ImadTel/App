@@ -58,6 +58,9 @@ class Order(models.Model):
     def __str__(self):
         return self.user.username
 
+    def get_linked_products_number(self):
+        return OrderProduct.objects.filter(order=self).count()
+
 
 
 class OrderProduct(models.Model):
@@ -65,6 +68,6 @@ class OrderProduct(models.Model):
     quantity = models.IntegerField(default=1)
     order = models.ForeignKey(Order,on_delete=models.CASCADE)
     def __str__(self):
-        return self.product.title
+        return self.product.title + '  ' + self.quantity
 
 

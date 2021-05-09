@@ -6,6 +6,12 @@ from django.views.generic import ListView,DetailView
 from django.utils import timezone
 
 
+
+
+
+
+
+
 # Create your views here.
 from .models import Product,Order,OrderProduct
 
@@ -33,14 +39,32 @@ class productView(ListView):
     model = Product
     template_name = "home-page.html"
 
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context['productsNumber'] = '-'
+        print (self.request.user)
+        ord =Order.objects.filter(user=self.request.user,ordered=False)
+        if self.request.user.is_authenticated and ord.exists():
+            
+            productsInCart = ord[0].get_linked_products_number()
+            context['productsNumber'] = productsInCart
+        return context
+
+
+
 class productDetail(DetailView):
     model=Product
     template_name = "product-page.html"
     
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        productsInCart = OrderProduct.objects.filter(order=Order.objects.get(user=self.request.user,ordered=False)).count()
-        context['productsNumber'] = productsInCart
+        context['productsNumber'] = '-'
+        print (self.request.user)
+        ord =Order.objects.filter(user=self.request.user,ordered=False)
+        if self.request.user.is_authenticated and ord.exists():
+            
+            productsInCart = ord[0].get_linked_products_number()
+            context['productsNumber'] = productsInCart
         return context
 
         
