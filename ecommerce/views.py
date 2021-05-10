@@ -41,13 +41,14 @@ class productView(ListView):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['productsNumber'] = '-'
+        context['productsNumber'] = 0
         print (self.request.user)
-        ord =Order.objects.filter(user=self.request.user,ordered=False)
-        if self.request.user.is_authenticated and ord.exists():
-            
-            productsInCart = ord[0].get_linked_products_number()
-            context['productsNumber'] = productsInCart
+        
+        if self.request.user.is_authenticated:
+            ord =Order.objects.filter(user=self.request.user,ordered=False)
+            if ord.exists():
+                productsInCart = ord[0].get_linked_products_number()
+                context['productsNumber'] = productsInCart
         return context
 
 
@@ -58,54 +59,59 @@ class productDetail(DetailView):
     
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['productsNumber'] = '-'
+        context['productsNumber'] = 0
         print (self.request.user)
-        ord =Order.objects.filter(user=self.request.user,ordered=False)
-        if self.request.user.is_authenticated and ord.exists():
-            
-            productsInCart = ord[0].get_linked_products_number()
-            context['productsNumber'] = productsInCart
+        
+        if self.request.user.is_authenticated:
+            ord =Order.objects.filter(user=self.request.user,ordered=False)
+            if ord.exists():
+                productsInCart = ord[0].get_linked_products_number()
+                context['productsNumber'] = productsInCart
         return context
 
         
 
 def add_to_cart(request,slug):
-    product=get_object_or_404(Product,slug=slug)
-    user_order=Order.objects.get_or_create(user=request.user,ordered=False,defaults={'orderedDate':timezone.now(), })
+    if request.user.is_authenticated:
+        product=get_object_or_404(Product,slug=slug)
+        user_order=Order.objects.get_or_create(user=request.user,ordered=False,defaults={'orderedDate':timezone.now(), })
 
-    Order.objects.get(ordered=False,user=request.user)
+        Order.objects.get(ordered=False,user=request.user)
 
-    defaults={}
-    defaults['quantity']=int(request.POST['quantity'])
-    ord_prod = OrderProduct.objects.filter(product=product,order=user_order[0])
-    if ord_prod.exists():
-        print('ord_prod')
-        print(ord_prod)
-        quantity = int(request.POST['quantity']) + ord_prod[0].quantity
-        defaults['quantity']=quantity
+        defaults={}
+        defaults['quantity']=int(request.POST['quantity'])
+        ord_prod = OrderProduct.objects.filter(product=product,order=user_order[0])
+        if ord_prod.exists():
+            print('ord_prod')
+            print(ord_prod)
+            quantity = int(request.POST['quantity']) + ord_prod[0].quantity
+            defaults['quantity']=quantity
         
         
 
-    order_product = OrderProduct.objects.update_or_create(order=user_order[0],product=product,defaults=defaults)
+        order_product = OrderProduct.objects.update_or_create(order=user_order[0],product=product,defaults=defaults)
 
     
-    OrderProduct.objects.update()
+        OrderProduct.objects.update()
 
     return redirect("ecommerce:productDetail", slug=slug)
         
 
 
 def remove_from_cart(request,slug):
-    order = Order.objects.filter(user=request.user,ordered=False)
-    if order.exists():
-        orderProduct = OrderProduct.objects.filter(order=order[0].id,product__slug=slug)
-        if orderProduct.exists():
-            orderProduct.delete()
+    if request.user.is_authenticated:
+        order = Order.objects.filter(user=request.user,ordered=False)
+        if order.exists():
+            orderProduct = OrderProduct.objects.filter(order=order[0].id,product__slug=slug)
+            if orderProduct.exists():
+                orderProduct.delete()
+            else:
+                print("you didn t order that product")
         else:
-            print("you didn t order that product")
+            print("you do not have an order yet")
+        
+        return redirect("ecommerce:productDetail",slug=slug)
     else:
-        print("you do not have an order yet")
-    
-    return redirect("ecommerce:productDetail",slug=slug)
+        return redirect("/accounts/login")
     
 
