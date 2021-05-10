@@ -5,7 +5,7 @@ from django.views.generic import ListView,DetailView
 
 from django.utils import timezone
 
-
+from django.contrib import messages
 
 
 
@@ -72,27 +72,32 @@ class productDetail(DetailView):
         
 
 def add_to_cart(request,slug):
+
     if request.user.is_authenticated:
         product=get_object_or_404(Product,slug=slug)
         user_order=Order.objects.get_or_create(user=request.user,ordered=False,defaults={'orderedDate':timezone.now(), })
 
         Order.objects.get(ordered=False,user=request.user)
-
+        
         defaults={}
         defaults['quantity']=int(request.POST['quantity'])
         ord_prod = OrderProduct.objects.filter(product=product,order=user_order[0])
+        message=""
         if ord_prod.exists():
             print('ord_prod')
             print(ord_prod)
             quantity = int(request.POST['quantity']) + ord_prod[0].quantity
             defaults['quantity']=quantity
-        
-        
-
+            message="the product quantity has been updated"
+            
+        if message=="":
+            message ="Product added succesfuly"
         order_product = OrderProduct.objects.update_or_create(order=user_order[0],product=product,defaults=defaults)
-
+        messages.add_message(request,messages.SUCCESS,message)
     
-        OrderProduct.objects.update()
+    else: 
+         messages.add_message(request,messages.WARNING,"you are not authenticated, please login then proceed to shopping")
+        
 
     return redirect("ecommerce:productDetail", slug=slug)
         

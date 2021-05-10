@@ -68,6 +68,6 @@ class OrderProduct(models.Model):
     quantity = models.IntegerField(default=1)
     order = models.ForeignKey(Order,on_delete=models.CASCADE)
     def __str__(self):
-        return self.product.title + '  ' + self.quantity
+        return self.product.title + '  ' + str(self.quantity)
 
 
