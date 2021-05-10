@@ -47,7 +47,7 @@ class productView(ListView):
         if self.request.user.is_authenticated:
             ord =Order.objects.filter(user=self.request.user,ordered=False)
             if ord.exists():
-                productsInCart = ord[0].get_linked_products_number()
+                productsInCart = ord[0].get_linked_products().count()
                 context['productsNumber'] = productsInCart
         return context
 
@@ -65,7 +65,7 @@ class productDetail(DetailView):
         if self.request.user.is_authenticated:
             ord =Order.objects.filter(user=self.request.user,ordered=False)
             if ord.exists():
-                productsInCart = ord[0].get_linked_products_number()
+                productsInCart = ord[0].get_linked_products().count()
                 context['productsNumber'] = productsInCart
         return context
 
@@ -105,18 +105,42 @@ def add_to_cart(request,slug):
 
 def remove_from_cart(request,slug):
     if request.user.is_authenticated:
+        message=""
         order = Order.objects.filter(user=request.user,ordered=False)
         if order.exists():
             orderProduct = OrderProduct.objects.filter(order=order[0].id,product__slug=slug)
             if orderProduct.exists():
                 orderProduct.delete()
+                message = "Product order has been deleted from your cart"
             else:
-                print("you didn t order that product")
+                message="This product doesn't exist in your cart"
         else:
-            print("you do not have an order yet")
+            message="you do not have an order yet"
         
+        messages.add_message(request,messages.WARNING,message)
         return redirect("ecommerce:productDetail",slug=slug)
     else:
+        messages.add_message(request,messages.warning,"you are not authenticated")
         return redirect("/accounts/login")
     
 
+
+
+
+def cart_view(request):
+    context = {}
+    if request.user.is_authenticated:
+        order= Order.objects.get(user=request.user,ordered=False)
+        if order!= None:
+          
+
+            context['objects']=order.get_linked_products()
+            context['productsNumber']=context['objects'].count()
+            context['total']=order.get_total_coast()
+            return render(request,"cart.html",context)
+        else:
+            messages.add_message(request,messages.WARNING,"your cart is empty")
+    else:
+        messages.add_message(request,messages.ERROR,"you are not authenticated")
+        return redirect("ecommerce:home")          
+        

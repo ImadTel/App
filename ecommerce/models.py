@@ -58,10 +58,16 @@ class Order(models.Model):
     def __str__(self):
         return self.user.username
 
-    def get_linked_products_number(self):
-        return OrderProduct.objects.filter(order=self).count()
+    def get_linked_products(self):
+        return OrderProduct.objects.filter(order=self)
 
 
+    def get_total_coast(self):
+        prods = self.get_linked_products()
+        total=0
+        for prod in prods:
+            total += prod.product.price * prod.quantity
+        return total
 
 class OrderProduct(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
