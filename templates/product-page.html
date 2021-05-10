@@ -11,7 +11,16 @@
   {% block mainContent %}
   <main class="mt-5 pt-4">
     <div class="container dark-grey-text mt-5">
+      {%for message in messages %}
+      <div {%if message.tags %} class="alert alert-{{message.tags}}  alert-dismissible   animated fadeInDownBig"  {%endif%}   id="myAlert" role="alert">
+        <a href = "#" class = "close" data-dismiss = "alert">&times;</a>
+        
+        <strong>Notification</strong> {{message}}
+      </div>
 
+
+      
+      {%endfor%}
       <!--Grid row-->
       <div class="row wow fadeIn">
 
@@ -137,6 +146,9 @@
 
     </div>
   </main>
+  
+
+
   {%endblock mainContent %}
 
 

@@ -5,7 +5,7 @@ from django.views.generic import ListView,DetailView
 
 from django.utils import timezone
 
-
+from django.contrib import messages
 
 
 
@@ -47,7 +47,7 @@ class productView(ListView):
         if self.request.user.is_authenticated:
             ord =Order.objects.filter(user=self.request.user,ordered=False)
             if ord.exists():
-                productsInCart = ord[0].get_linked_products_number()
+                productsInCart = ord[0].get_linked_products().count()
                 context['productsNumber'] = productsInCart
         return context
 
@@ -65,34 +65,39 @@ class productDetail(DetailView):
         if self.request.user.is_authenticated:
             ord =Order.objects.filter(user=self.request.user,ordered=False)
             if ord.exists():
-                productsInCart = ord[0].get_linked_products_number()
+                productsInCart = ord[0].get_linked_products().count()
                 context['productsNumber'] = productsInCart
         return context
 
         
 
 def add_to_cart(request,slug):
+
     if request.user.is_authenticated:
         product=get_object_or_404(Product,slug=slug)
         user_order=Order.objects.get_or_create(user=request.user,ordered=False,defaults={'orderedDate':timezone.now(), })
 
         Order.objects.get(ordered=False,user=request.user)
-
+        
         defaults={}
         defaults['quantity']=int(request.POST['quantity'])
         ord_prod = OrderProduct.objects.filter(product=product,order=user_order[0])
+        message=""
         if ord_prod.exists():
             print('ord_prod')
             print(ord_prod)
             quantity = int(request.POST['quantity']) + ord_prod[0].quantity
             defaults['quantity']=quantity
-        
-        
-
+            message="the product quantity has been updated"
+            
+        if message=="":
+            message ="Product added succesfuly"
         order_product = OrderProduct.objects.update_or_create(order=user_order[0],product=product,defaults=defaults)
-
+        messages.add_message(request,messages.SUCCESS,message)
     
-        OrderProduct.objects.update()
+    else: 
+         messages.add_message(request,messages.WARNING,"you are not authenticated, please login then proceed to shopping")
+        
 
     return redirect("ecommerce:productDetail", slug=slug)
         
@@ -100,18 +105,42 @@ def add_to_cart(request,slug):
 
 def remove_from_cart(request,slug):
     if request.user.is_authenticated:
+        message=""
         order = Order.objects.filter(user=request.user,ordered=False)
         if order.exists():
             orderProduct = OrderProduct.objects.filter(order=order[0].id,product__slug=slug)
             if orderProduct.exists():
                 orderProduct.delete()
+                message = "Product order has been deleted from your cart"
             else:
-                print("you didn t order that product")
+                message="This product doesn't exist in your cart"
         else:
-            print("you do not have an order yet")
+            message="you do not have an order yet"
         
+        messages.add_message(request,messages.WARNING,message)
         return redirect("ecommerce:productDetail",slug=slug)
     else:
+        messages.add_message(request,messages.warning,"you are not authenticated")
         return redirect("/accounts/login")
     
 
+
+
+
+def cart_view(request):
+    context = {}
+    if request.user.is_authenticated:
+        order= Order.objects.get(user=request.user,ordered=False)
+        if order!= None:
+          
+
+            context['objects']=order.get_linked_products()
+            context['productsNumber']=context['objects'].count()
+            context['total']=order.get_total_coast()
+            return render(request,"cart.html",context)
+        else:
+            messages.add_message(request,messages.WARNING,"your cart is empty")
+    else:
+        messages.add_message(request,messages.ERROR,"you are not authenticated")
+        return redirect("ecommerce:home")          
+        

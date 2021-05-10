@@ -90,9 +90,10 @@
         {%if user.is_authenticated %}
         <ul class="navbar-nav nav-flex-icons">
           <li class="nav-item">
-            <a class="nav-link waves-effect">
+            <a class="nav-link waves-effect" href="{% url 'ecommerce:cart_view' %}" >
               <span class="badge red z-depth-1 mr-1"> {{productsNumber}} </span>
               <i class="fas fa-shopping-cart"></i>
+
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
           </li>
@@ -332,13 +333,13 @@
 
   <!-- SCRIPTS -->
   <!-- JQuery -->
-  <script type="text/javascript" src="{% static 'mainTempalte/js/jquery-3.4.1.min.js'  %}">  </script>
+  <script type="text/javascript" src="{% static 'mainTemplate/js/jquery-3.4.1.min.js'  %}">  </script>
   <!-- Bootstrap tooltips -->
-  <script type="text/javascript" src="{% static 'mainTempalte/js/popper.min.js'  %}"  ></script>
+  <script type="text/javascript" src="{% static 'mainTemplate/js/popper.min.js'  %}"  ></script>
   <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="{% static 'mainTempalte/js/bootstrap.min.js'  %}"  ></script>
+  <script type="text/javascript" src="{% static 'mainTemplate/js/bootstrap.min.js'  %}"  ></script>
   <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="{% static 'mainTempalte/js/mdb.min.js'  %}"   ></script>
+  <script type="text/javascript" src="{% static 'mainTemplate/js/mdb.min.js'  %}"   ></script>
   <!-- Initializations -->
   <script type="text/javascript">
     // Animations initialization
