@@ -7,8 +7,9 @@ from django.utils import timezone
 
 from django.contrib import messages
 
+from django.shortcuts import reverse
 
-
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -70,9 +71,10 @@ class productDetail(DetailView):
         return context
 
         
-
+@login_required
 def add_to_cart(request,slug):
-
+    if    request.POST.get('quantity')==None:
+        return redirect("ecommerce:productDetail",slug=slug)
     if request.user.is_authenticated:
         product=get_object_or_404(Product,slug=slug)
         user_order=Order.objects.get_or_create(user=request.user,ordered=False,defaults={'orderedDate':timezone.now(), })
@@ -80,7 +82,7 @@ def add_to_cart(request,slug):
         Order.objects.get(ordered=False,user=request.user)
         
         defaults={}
-        defaults['quantity']=int(request.POST['quantity'])
+        defaults['quantity']=int(request.POST.get('quantity'))
         ord_prod = OrderProduct.objects.filter(product=product,order=user_order[0])
         message=""
         if ord_prod.exists():
@@ -94,13 +96,9 @@ def add_to_cart(request,slug):
             message ="Product added succesfuly"
         order_product = OrderProduct.objects.update_or_create(order=user_order[0],product=product,defaults=defaults)
         messages.add_message(request,messages.SUCCESS,message)
+        return redirect("ecommerce:productDetail",slug=slug)
     
-    else: 
-         messages.add_message(request,messages.WARNING,"you are not authenticated, please login then proceed to shopping")
-        
 
-    return redirect("ecommerce:productDetail", slug=slug)
-        
 
 
 def remove_from_cart(request,slug):
@@ -121,6 +119,7 @@ def remove_from_cart(request,slug):
         return redirect("ecommerce:productDetail",slug=slug)
     else:
         messages.add_message(request,messages.warning,"you are not authenticated")
+        
         return redirect("/accounts/login")
     
 
