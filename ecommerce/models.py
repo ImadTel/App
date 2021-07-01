@@ -66,8 +66,12 @@ class Order(models.Model):
         prods = self.get_linked_products()
         total=0
         for prod in prods:
-            total += prod.product.price * prod.quantity
+            if not prod.product.discout_price:
+                total += prod.product.price * prod.quantity
+            else:
+                total += prod.product.discout_price * prod.quantity
         return total
+
 
 class OrderProduct(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
@@ -77,3 +81,4 @@ class OrderProduct(models.Model):
         return self.product.title + '  ' + str(self.quantity)
 
 
+ 

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
 
 
@@ -94,6 +95,19 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
+
+
+SOCIALACCOUNT_PROVIDERS ={
+    'google': {
+        'SCOPE':[
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 
 
@@ -154,10 +168,12 @@ STATICFILES_DIRS = [
 ]
 
 
+LOGIN_REDIRECT_URL = '/ecommerce/'
+LOGOUT_REDIRECT_URL = '/ecommerce/'
 
 
 
-SITE_ID = 1
+SITE_ID = 2
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

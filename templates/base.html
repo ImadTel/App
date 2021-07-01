@@ -1,4 +1,6 @@
 {% load static %}
+{% load cart_template_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,6 +46,8 @@
     }
 
   </style>
+   {% block extra_head %}
+   {% endblock %}
 </head>
 
 <body>
@@ -51,7 +55,7 @@
   <!-- Navbar -->
   {% block navbar %}
 
-  <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar mb-5">
     <div class="container">
 
       <!-- Brand -->
@@ -91,15 +95,41 @@
         <ul class="navbar-nav nav-flex-icons">
           <li class="nav-item">
             <a class="nav-link waves-effect" href="{% url 'ecommerce:cart_view' %}" >
-              <span class="badge red z-depth-1 mr-1"> {{productsNumber}} </span>
+              <span class="badge red z-depth-1 mr-1"> {{request.user| cart_items_count }} </span>
               <i class="fas fa-shopping-cart"></i>
 
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
           </li>
-          {%endif %}
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_logout' %}" >
+              <span class="badge green z-depth-1 mr-1" >Logout</span>
+            </a>
+            
+          </li> 
+          
         </ul>
+        {%else%}
+        <ul  class="navbar-nav nav-flex-icons">
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_login' %}" >
+              <span >Login</span>
+            </a>
+            
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_signup' %}" >
+              <span >Sign up</span>
+            </a>
+            
+          </li>
+        </ul>
+
+        {%endif %}
+        
         {%endblock navDetails%}
+
+
         
         
         
@@ -112,6 +142,17 @@
 
   {%endblock navbar %}
 
+
+  {%for message in messages %}
+  <div {%if message.tags %} class="alert alert-{{message.tags}}  alert-dismissible   animated fadeInDownBig"  {%endif%}   id="myAlert" role="alert">
+    <a href = "#" class = "close" data-dismiss = "alert">&times;</a>
+    
+    <strong>Notification</strong> {{message}}
+  </div>
+
+
+  
+  {%endfor%}
 
   <!-- Navbar -->
 
@@ -263,8 +304,22 @@
   {% endblock carousel %}
 
     {% block mainContent%}
-    {% endblock mainContent %}
+    {%for message in messages %}
+    <div {%if message.tags %} class="alert alert-{{message.tags}}  alert-dismissible   animated fadeInDownBig"  {%endif%}   id="myAlert" role="alert">
+      <a href = "#" class = "close" data-dismiss = "alert">&times;</a>
+      
+      <strong>Notification</strong> {{message}}
+    </div>
+
+
+
+
     
+    {%endfor%}
+    {% endblock mainContent %}
+
+    {% block extra_body %}
+    {% endblock %}
   {%block footer%}
   <!--Footer-->
   <footer class="page-footer text-center font-small mt-4 wow fadeIn">

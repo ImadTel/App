@@ -13,44 +13,83 @@
         <h3 >Cart details for Mr/Ms <b>{{user.username}}</b></h3> 
     </div>
 
+    {%if not total %}
+      <div class="container mb-5" >
+        
+        <table>
+          <tr>
+            <td colspan="3" class="pr-3">
+              <h3>Your cart is empty</h3>
+            </td>
+            <td>
+              <a class="btn btn-primary float-right ml-2" href="/ecommerce/" >Continue Shopping</a>
+            </td>
+            
+              
+          </tr>
+        </table>
+       
+
+
+      </div> 
+
+    {%else%}
     <table class="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Title</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Price</th>
-            <th scope="col">Discount price</th>
-            <th scope="col">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-        {%for object in objects%}
-          <tr>
-            <th scope="row">{{forloop.counter}}</th>
-            <td>{{object.product.title}}</td>
-            <td>{{object.quantity}}</td>
-            <td>{{object.product.price}} $</td>
-            {% if object.product.discout_price%} <td>{{object.product.discout_price}} $</td> 
-            {%else %}
-            <td > - </td>
-            {%endif%}
-            <td>{% widthratio object.product.price 1 object.quantity %}</td>
-          </tr>
-          {%endfor%}
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Price</th>
+          <th scope="col">Discount price</th>
+          <th scope="col">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+      {%for object in objects%}
+        <tr>
+          <th scope="row">{{forloop.counter}}</th>
+          <td>{{object.product.title}}</td>
+          <td>{{object.quantity}}</td>
+          <td>{{object.product.price}} $</td>
+          {% if object.product.discout_price%} 
+          <td>{{object.product.discout_price}} $</td> 
+          <td>{% widthratio object.product.discout_price 1 object.quantity %}</td>
+          {%else %}
+          <td > - </td>
+          <td>{% widthratio object.product.price 1 object.quantity %}</td>
+          {%endif%}
+          
+        </tr>
+        {%endfor%}
 
-          <tr>
-            <th scope="row">-</th>
-            <td><h4><b></b>Total Price</h4></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><b><h3>{{total}}</h3></b></td>
+        <tr>
+          <th scope="row">-</th>
+          <td colspan="4"><h4><b></b>Total Price</h4></td>
+         
+          <td><b><h3>{{total}}</h3></b></td>
 
-          </tr>
-        </tbody>
-      </table>
+        </tr>
+        <tr>
+          <td colspan="6">
+            <a class="btn btn-primary float-right ml-2" href="/ecommerce/" >Continue Shopping</a>
+            <a class="btn btn-warning float-right" href="/ecommerce/checkout/" >Proceed to payement</a>
+          </td>
+            
+          
+        </tr>
+
+      </tbody>
+    </table>
+
+
+
+    {%endif%}
+
+    
+
 </div>
+
 
 
 {% endblock mainContent %}

@@ -31,15 +31,15 @@ def checkout(request):
    return render(request,"checkout-page.html")
 
 
-class productView(ListView):
-    model = Product
-    template_name = "home-page.html"
+#class productView(ListView):
+#   model = Product
+#  template_name = "home-page.html"
 
 
 class productView(ListView):
     model = Product
     template_name = "home-page.html"
-
+    paginate_by = 2
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['productsNumber'] = 0
@@ -75,6 +75,13 @@ class productDetail(DetailView):
 def add_to_cart(request,slug):
     if    request.POST.get('quantity')==None:
         return redirect("ecommerce:productDetail",slug=slug)
+    
+
+    if int(request.POST.get('quantity'))<0:
+        messages.add_message(request,messages.WARNING,"quantity should ne greater than 0")
+        return redirect("ecommerce:productDetail",slug=slug)
+
+
     if request.user.is_authenticated:
         product=get_object_or_404(Product,slug=slug)
         user_order=Order.objects.get_or_create(user=request.user,ordered=False,defaults={'orderedDate':timezone.now(), })
@@ -129,17 +136,20 @@ def remove_from_cart(request,slug):
 def cart_view(request):
     context = {}
     if request.user.is_authenticated:
-        order= Order.objects.get(user=request.user,ordered=False)
-        if order!= None:
-          
+        print (request.user)
+        order= Order.objects.filter(user=request.user,ordered=False)
+        if order.exists():
+            print ('hi')
 
-            context['objects']=order.get_linked_products()
+            context['objects']=order[0].get_linked_products()
             context['productsNumber']=context['objects'].count()
-            context['total']=order.get_total_coast()
+            context['total']=order[0].get_total_coast()
             return render(request,"cart.html",context)
         else:
             messages.add_message(request,messages.WARNING,"your cart is empty")
+            return redirect("ecommerce:home") 
     else:
+        print ('ha')
         messages.add_message(request,messages.ERROR,"you are not authenticated")
         return redirect("ecommerce:home")          
         
