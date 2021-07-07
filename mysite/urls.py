@@ -24,6 +24,7 @@ urlpatterns = [
      path('accounts/', include('allauth.urls')),
      path('logout/', LogoutView.as_view()),
      path('ecommerce/', include('ecommerce.urls', namespace='ecommerce')),
+     #path('', include('ecommerce.urls', namespace='ecommerce')),
 ]
 
 

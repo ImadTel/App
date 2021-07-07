@@ -1,7 +1,7 @@
 
 from django.shortcuts import render,get_object_or_404,redirect
 
-from django.views.generic import ListView,DetailView
+from django.views.generic import ListView,DetailView,UpdateView
 
 from django.utils import timezone
 
@@ -11,7 +11,13 @@ from django.shortcuts import reverse
 
 from django.contrib.auth.decorators import login_required
 
+from .tasks import return_somthing,send_email_task
 
+from django.core.mail import send_mail
+
+from django.conf import settings
+
+from .models import CATEGORIES
 
 # Create your views here.
 from .models import Product,Order,OrderProduct
@@ -72,7 +78,31 @@ class productDetail(DetailView):
 
         
 @login_required
-def add_to_cart(request,slug):
+def add_to_cart(request,slug,**kwargs):
+    #return_somthing.apply_async()
+    send_email_task.apply_async()    
+    #send_email_task()
+
+    
+    if  kwargs:
+        print (kwargs)
+        product=get_object_or_404(Product,slug=slug)
+        ord = get_object_or_404(Order,user=request.user,ordered=False)
+        ord_prod = get_object_or_404(OrderProduct,order=ord,product=product)
+        ord_prod.quantity=quantity=ord_prod.quantity+ int(kwargs["quantity"])
+        if ord_prod.quantity==0:
+            ord_prod.delete()
+        else:
+            ord_prod.save()
+
+
+        print ('task called')
+       
+        
+        return redirect("ecommerce:cart_view")
+
+
+
     if    request.POST.get('quantity')==None:
         return redirect("ecommerce:productDetail",slug=slug)
     
@@ -109,6 +139,7 @@ def add_to_cart(request,slug):
 
 
 def remove_from_cart(request,slug):
+
     if request.user.is_authenticated:
         message=""
         order = Order.objects.filter(user=request.user,ordered=False)
@@ -134,12 +165,16 @@ def remove_from_cart(request,slug):
 
 
 def cart_view(request):
+    pro=Product.objects.all()
+    for p in pro:
+        print (p.get_add_one_to_cart_url())
+
     context = {}
     if request.user.is_authenticated:
-        print (request.user)
+        
         order= Order.objects.filter(user=request.user,ordered=False)
         if order.exists():
-            print ('hi')
+           
 
             context['objects']=order[0].get_linked_products()
             context['productsNumber']=context['objects'].count()
@@ -149,7 +184,19 @@ def cart_view(request):
             messages.add_message(request,messages.WARNING,"your cart is empty")
             return redirect("ecommerce:home") 
     else:
-        print ('ha')
+        
         messages.add_message(request,messages.ERROR,"you are not authenticated")
         return redirect("ecommerce:home")          
         
+
+class update_view(UpdateView):
+     model = Product
+     template_name = 'update.html'
+     fields = ['title','category','price','discout_price','description','label']
+
+     def get_context_data(self, **kwargs):
+
+         context = super().get_context_data(**kwargs)
+         
+         context['categories']=dict(CATEGORIES)
+         return context

@@ -40,6 +40,22 @@ class Product(models.Model):
             'slug' : self.slug,
         })
 
+    def get_update_url(self):
+        return reverse('ecommerce:update_item',kwargs ={
+            'pk' : self.pk,
+        })
+
+    def get_add_one_to_cart_url(self):
+        return reverse('ecommerce:cart_view_res',kwargs ={
+            'slug' : self.slug,
+            'quantity' : 1,
+        })
+    def get_subs_one_to_cart_url(self):
+        return reverse('ecommerce:cart_view_res',kwargs ={
+            'slug' : self.slug,
+            'quantity' : -1,
+        })
+
     
     def get_remove_from_cart_url(self):
         return reverse('ecommerce:remove_from_cart',kwargs={

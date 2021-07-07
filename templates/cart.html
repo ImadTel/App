@@ -50,7 +50,13 @@
         <tr>
           <th scope="row">{{forloop.counter}}</th>
           <td>{{object.product.title}}</td>
-          <td>{{object.quantity}}</td>
+
+          <td>
+            <a href ="{{object.product.get_subs_one_to_cart_url}}" class='mr-1 '><i class="fas fa-minus"></i></a> 
+            {{object.quantity}}
+            <a href ="{{object.product.get_add_one_to_cart_url}}" class='ml-1 '><i class="fas fa-plus"></i></a>
+          </td>
+
           <td>{{object.product.price}} $</td>
           {% if object.product.discout_price%} 
           <td>{{object.product.discout_price}} $</td> 

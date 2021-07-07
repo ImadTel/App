@@ -68,6 +68,9 @@
                 <form class="d-flex justify-content-left"   method="POST"  action="{{object.get_add_to_cart_url }}"   >  {% csrf_token %}
                   <!-- Default input -->
                   <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px" name="quantity">
+
+                  <input type="text-area" value={{object.description}}   >
+
                   <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
                     <i class="fas fa-shopping-cart ml-1"></i>
                   </button>

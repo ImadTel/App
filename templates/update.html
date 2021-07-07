@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+
+{% block carousel %}
+
+{%endblock carousel %}
+
+
+
+
+  {% block mainContent %}
+  <main class="mt-5 pt-4">
+    <div class="container dark-grey-text mt-5">
+      {%for message in messages %}
+      <div {%if message.tags %} class="alert alert-{{message.tags}}  alert-dismissible   animated fadeInDownBig"  {%endif%}   id="myAlert" role="alert">
+        <a href = "#" class = "close" data-dismiss = "alert">&times;</a>
+        
+        <strong>Notification</strong> {{message}}
+      </div>
+
+
+      
+      {%endfor%}
+      
+
+
+      <form>
+        <!-- 2 column grid layout with text inputs for the first and last names -->
+        <div class="row mb-4">
+          <div class="col">
+            <div class="form-outline">
+              <input type="text" id="form6Example1" class="form-control"  value={{object.title}} />
+              <label class="form-label" for="form6Example1">First name</label>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+
+            <select class="select m-4" >
+                {%for k,v in  categories.items %}
+              <option value={{k}}>{{v}}</option>
+                {%endfor%}
+            </select>
+          </div>
+
+          
+
+        </div>
+      
+        <!-- Text input -->
+        <div class="form-outline mb-4">
+          <input type="text" id="" class="form-control" value={{object.description}}/>
+          <label class="form-label" for="form6Example3">Company name</label>
+        </div>
+      
+        <!-- Text input -->
+        <div class="form-outline mb-4">
+          <input type="text" id="form6Example4" class="form-control" value={{object.description}} />
+          <label class="form-label" for="form6Example4">Address</label>
+        </div>
+      
+        <!-- Email input -->
+        <div class="form-outline mb-4">
+          <input type="number" id="form6Example5" class="form-control"  value={{object.price}} />
+          <label class="form-label" for="form6Example5">Email</label>
+        </div>
+      
+        <!-- Number input -->
+        <div class="form-outline mb-4">
+          <input type="number" id="form6Example6" class="form-control" />
+          <label class="form-label" for="form6Example6">Phone</label>
+        </div>
+      
+        <!-- Message input -->
+        <div class="form-outline mb-4">
+          <textarea class="form-control" id="form6Example7" rows="4"{{object.description}}>{{object.description}}</textarea>
+          <label class="form-label" for="form6Example7">Additional information</label>
+        </div>
+      
+        <!-- Checkbox -->
+        <div class="form-check d-flex justify-content-center mb-4">
+          <input
+            class="form-check-input me-2"
+            type="checkbox"
+            value=""
+            id="form6Example8"
+            checked
+          />
+          <label class="form-check-label" for="form6Example8"> Create an account? </label>
+        </div>
+      
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Place order</button>
+      </form>
+
+
+      <hr>
+
+
+    </div>
+  </main>
+  
+
+
+  {%endblock mainContent %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

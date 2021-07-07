@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-o5=yf+sf!!as1*mwo$b-&ae0b56nd4@^24z6#wv0a_nvq#2^s#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.42.73', '127.0.0.1','localhost','www.testdomainetest.com']
 
 
 # Application definition
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
-
+    'django_celery_beat',
+    'django_celery_results',
 
     'polls',
     'ecommerce',
@@ -56,6 +57,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
+
+
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -67,6 +74,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mysite.urls'
+
+
 
 TEMPLATES = [
     {
@@ -179,3 +188,28 @@ SITE_ID = 2
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Celery Configuration Options
+CELERY_TIMEZONE = 'Africa/Algiers'
+#CELERY_TASK_TRACK_STARTED = True
+#CELERY_TASK_TIME_LIMIT = 30 * 60
+
+
+BROKER_URL = 'redis-18882.c258.us-east-1-4.ec2.cloud.redislabs.com:18882'
+#CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+#CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER  = 'json'
+
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False 
+EMAIL_PORT = 587
+#EMAIL_HOST_USER 
+#EMAIL_HOST_PASSWORD  
