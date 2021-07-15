@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+
+<script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+
+<script src="https://js.stripe.com/v3/"></script>
+
+
+
 {%block carousel %}
 {%endblock carousel %}
 
@@ -65,7 +72,7 @@
           <td > - </td>
           <td>{% widthratio object.product.price 1 object.quantity %}</td>
           {%endif%}
-          
+          <td><a href ="{{object.product.remove_product_from_cart_view_url}}" class='ml-1' style = 'color:red '><i class="fas fa-trash" ></i></a></td>
         </tr>
         {%endfor%}
 
@@ -80,6 +87,12 @@
           <td colspan="6">
             <a class="btn btn-primary float-right ml-2" href="/ecommerce/" >Continue Shopping</a>
             <a class="btn btn-warning float-right" href="/ecommerce/checkout/" >Proceed to payement</a>
+            <form action="{% url 'ecommerce:create_checkout_session' %}" method="POST">
+                {%csrf_token%}
+              <input type="hidden" id="user" name="user" value="{{user.id}}" />
+              <button type="submit" class = "btn btn-success">Proceed to Payment</button>
+      
+            </form>
           </td>
             
           

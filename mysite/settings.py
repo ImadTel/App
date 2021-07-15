@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 
     'django_celery_beat',
     'django_celery_results',
@@ -55,6 +56,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
 
     'django.contrib.staticfiles',
+    'django_countries',
+    'crispy_forms'
 ]
 
 
@@ -115,7 +118,28 @@ SOCIALACCOUNT_PROVIDERS ={
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
-    }
+    },
+
+      'facebook':
+       {'METHOD': 'oauth2',
+        'SCOPE': ['email','public_profile', 'user_friends'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time'],
+        'EXCHANGE_TOKEN': True,
+        #'LOCALE_FUNC': lambda request: 'kr_KR',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.4'}
 }
 
 
@@ -213,3 +237,7 @@ EMAIL_USE_SSL = False
 EMAIL_PORT = 587
 #EMAIL_HOST_USER 
 #EMAIL_HOST_PASSWORD  
+
+STRIPE_TEST_SECRET_KEY = 'sk_test_51JClzSBYB6qd8ZUsoJRA8ZMbI7Y1eZJLSu9eHeWb9A9rIdVo73rwWv1by7sXTr1vqncwfdmDjfNpP8iIRYF3WV6O00zkpTQatK'
+
+WH_SECRET = 'whsec_jBIZsc0GhOQrVODW7If60KU5sNC4oXe4'

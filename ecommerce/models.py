@@ -1,6 +1,10 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.base import Model
+from django.db.models.deletion import CASCADE
 from django.shortcuts import reverse
+from django_countries.fields import CountryField
+
 
 # Create your models here.
 
@@ -62,7 +66,10 @@ class Product(models.Model):
             'slug':self.slug,
         })
 
-
+    def remove_product_from_cart_view_url(self):
+        return reverse('ecommerce:remove_product_from_cart_view',kwargs={
+            'slug':self.slug,
+        })
 
 
 class Order(models.Model):
@@ -98,3 +105,12 @@ class OrderProduct(models.Model):
 
 
  
+
+class BillingAdress(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=CASCADE)
+    street_Adress =models.CharField(max_length=200)
+    apartment = models.CharField(max_length=200)
+    country = CountryField(multiple=False)
+    zip = models.CharField(max_length=50)
+    order = models.ForeignKey(Order,on_delete=CASCADE)
+    
