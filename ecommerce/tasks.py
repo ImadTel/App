@@ -6,7 +6,7 @@ from django.conf import settings
 
 @shared_task(name="test")
 def  return_somthing():
-    subject = 'Thank you for registering to our site ooo my god'
+    subject = 'Thank you for registering to our site'
     message = 'this a test of sending an email from a celery task'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = ['kakigi6017@herrain.com']    
@@ -20,7 +20,7 @@ def  return_somthing():
 
 @shared_task(name='send_test_email')
 def send_email_task():
-    subject = 'Thank you for registering to our site mannnnnnnnnnnnnnnnnnnn'
+    subject = 'Thank you for registering to our site'
     message = 'this a test of sending an email from a celery task okeys'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = ['kakigi6017@herrain.com']    
