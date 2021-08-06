@@ -1,6 +1,6 @@
 from  django import template
 from ecommerce.models import Order,OrderProduct
-
+from django.conf import settings
 register = template.Library()
 
 @register.filter
@@ -11,3 +11,4 @@ def cart_items_count(user):
             return OrderProduct.objects.filter(order=ord[0]).count()
 
         return 0
+    

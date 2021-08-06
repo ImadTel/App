@@ -27,7 +27,7 @@
         <!--Grid column-->
         <div class="col-md-6 mb-4">
 
-          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/14.jpg" class="img-fluid" alt="">
+          <img src="{{object.image.url}}" class="img-fluid" alt="{{object.title}}">
 
         </div>
         <!--Grid column-->
@@ -69,8 +69,6 @@
                   <!-- Default input -->
                   <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px" name="quantity">
 
-                  <input type="text-area" value={{object.description}}   >
-
                   <button class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
                     <i class="fas fa-shopping-cart ml-1"></i>
                   </button>
@@ -103,13 +101,32 @@
       <div class="row d-flex justify-content-center wow fadeIn">
 
         <!--Grid column-->
-        <div class="col-md-6 text-center">
+        <div class="col-md-8 text-center">
 
-          <h4 class="my-4 h4">Additional information</h4>
+          <h4 class="my-4 h4">reviews</h4>
 
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta odit
-            voluptates,
-            quibusdam officia. Neque quibusdam quas a quis porro? Molestias illo neque eum in laborum.</p>
+          <!-- comments-->
+          <ul>
+            {%for comment in comments%}
+            <li>
+              <h3>{{comment.user}}</h3><br>
+              <p>{{comment.content}} </p> <br>
+              <p>{{comment.rating}}</p>
+
+              <div class="card p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="user d-flex flex-row align-items-center"> <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle mr-2"> <span><small class="font-weight-bold text-primary">james_olesenn</small> <small class="font-weight-bold">Hmm, This poster looks cool</small></span> </div> <small>2 days ago</small>
+                </div>
+                <div class="action d-flex justify-content-between mt-2 align-items-center">
+                    <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
+                    <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
+                </div>
+            </div>
+
+            </li>
+            {%endfor%}
+      
+          </ul>
 
         </div>
         <!--Grid column-->

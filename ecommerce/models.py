@@ -29,6 +29,7 @@ class Product(models.Model):
     price = models.FloatField(default=0)
     discout_price = models.FloatField(null=True,blank=True)
     label  = models.CharField(choices=LABELS,max_length=15)
+    image = models.ImageField(upload_to='products',blank=True,null=True)
     slug = models.SlugField()
 
     def __str__(self):
@@ -70,6 +71,8 @@ class Product(models.Model):
         return reverse('ecommerce:remove_product_from_cart_view',kwargs={
             'slug':self.slug,
         })
+
+
 
 
 class Order(models.Model):
@@ -114,3 +117,13 @@ class BillingAdress(models.Model):
     zip = models.CharField(max_length=50)
     order = models.ForeignKey(Order,on_delete=CASCADE)
     
+
+
+class Comment(models.Model):
+    content = models.CharField(max_length=500)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=CASCADE)
+    product = models.ForeignKey(Product,on_delete=CASCADE)
+    rating = models.IntegerField(default=1,null=True,blank=True)
+
+    def __str__(self):
+        return self.content  + ';  user: ' + self.user.username + '; product: ' + self.product.title

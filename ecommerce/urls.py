@@ -1,11 +1,17 @@
 from django.urls import path
 
+from django.conf import settings
+
+
+
 from .views import (checkout,productView,productDetail,
                     add_to_cart,remove_from_cart,cart_view,
                     update_view,remove_product_from_cart,
                     Checkout_view,PayementView,CreateCheckoutSession,
                     success_payment,cancel_payment,
                     stripe_webhook,
+                    response_with_category,
+                    search,
                     )
 
 app_name = "ecommerce"
@@ -25,4 +31,7 @@ urlpatterns = [
         path('success/',success_payment,name='success_payment'),
         path('cancel/',cancel_payment,name='cancel_payment'),
         path('stripe/webhook/',stripe_webhook,name='stripe_webhook'),
+        path('<category>/',response_with_category,name='response_with_category'),
+        path('search',search,name='search_products')
             ]
+

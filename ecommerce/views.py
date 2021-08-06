@@ -23,7 +23,7 @@ from django.core.mail import send_mail
 
 from django.conf import settings
 
-from .models import CATEGORIES,BillingAdress
+from .models import CATEGORIES,BillingAdress,Comment
 
 from .forms import CheckOutForm
 
@@ -36,6 +36,8 @@ from .models import Product,Order,OrderProduct
 
 from django.http import HttpResponse
 
+from django.core import serializers
+from django.core.paginator import Paginator
 
 
 
@@ -57,6 +59,7 @@ def products(request):
 #  template_name = "home-page.html"
 
 
+
 class productView(ListView):
     model = Product
     template_name = "home-page.html"
@@ -64,14 +67,31 @@ class productView(ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['productsNumber'] = 0
-        print (self.request.user)
+        context['categories'] = CATEGORIES
+        str = settings.MEDIA_ROOT 
         
+        context['media_url'] = str
         if self.request.user.is_authenticated:
             ord =Order.objects.filter(user=self.request.user,ordered=False)
             if ord.exists():
                 productsInCart = ord[0].get_linked_products().count()
                 context['productsNumber'] = productsInCart
         return context
+
+
+
+def search(request):
+    context={}
+    query= request.GET['search_text']
+    print ("im here")
+    object_list = Product.objects.filter(title__icontains=query)
+    context['object_list']=object_list
+    context['categories'] = CATEGORIES
+
+    return render(request,'home-page.html',context)
+
+
+
 
 
 
@@ -82,8 +102,10 @@ class productDetail(DetailView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['productsNumber'] = 0
-        print (self.request.user)
-        
+        print(context)
+        print('here')
+        comments = Comment.objects.filter(product=context['object'])
+        context['comments'] = comments
         if self.request.user.is_authenticated:
             ord =Order.objects.filter(user=self.request.user,ordered=False)
             if ord.exists():
@@ -92,6 +114,11 @@ class productDetail(DetailView):
         return context
 
         
+
+
+
+
+
 @login_required
 def add_to_cart(request,slug,**kwargs):
     #return_somthing.apply_async()
@@ -153,6 +180,8 @@ def add_to_cart(request,slug,**kwargs):
 
 
 
+
+
 def remove_from_cart(request,slug):
 
     if request.user.is_authenticated:
@@ -175,6 +204,8 @@ def remove_from_cart(request,slug):
         
         return redirect("/accounts/login")
     
+
+
 
 
 
@@ -203,6 +234,8 @@ def cart_view(request):
         messages.add_message(request,messages.ERROR,"you are not authenticated")
         return redirect("ecommerce:home")          
         
+
+
 
 class update_view(UpdateView):
      model = Product
@@ -489,4 +522,26 @@ def stripe_webhook(request):
 
 
 
-  
+
+
+
+
+def response_with_category(request,category):
+    
+    qs=Product.objects.filter(category=category)
+    object_list = list(qs.values())
+    paginator = Paginator(object_list, 2)
+    page_number = 1
+    
+    if not request.is_ajax():
+        page_number = request.GET.get('page')
+    
+    page_obj = paginator.get_page(page_number)
+      
+    
+    context = {'is_paginated':True,'page_obj': page_obj,'object_list':qs}
+    return render(request,'filtered_list.html',context)
+
+
+
+    
