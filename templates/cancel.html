@@ -1,21 +1,66 @@
-<html>
 
-<head>
+{% extends 'base.html' %}
 
-  <title>Checkout canceled</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
 
-  <link rel="stylesheet" href="style.css">
+<script src="https://js.stripe.com/v3/"></script>
 
-</head>
+{% block carousel %}
+{% endblock carousel %}
 
-<body>
+{%block mainContent %}
+<!--Main layout-->
+  <main class="mt-5 pt-4">
+    <div class="container wow fadeIn">
 
-  <section>
+      <!-- Heading -->
+      <h2 class="my-5 h2 text-center">Payment canceled</h2>
 
-    <p>Forgot to add something to your cart? Shop around then come back to pay!</p>
+      <!--Grid row-->
+      <div class="row justify-content-center">
+
+        <!--Grid column-->
+        <div class="col-md-8 mb-4">
+
+
+
+         
+
+          <!--Card-->
+          <div class="card" style="min-height:70px;">
+
+				 <section>
+			
+			
+			
+			<div class="row justify-content-center align-items-center">
+				
+				<p  class="p-3 mt-3">
+
+					Forgot to add something to your cart? Shop around then come back to pay!
+
+							<a href="mailto:imad.tel.imad@gmail.com">imad.tel.imad@gmail.com</a>.
+
+			</p>
+			
+			<a class= "btn btn-primary m-3" href="{%url "ecommerce:home"%}"> go shopping</a>
+			</div>
 
   </section>
+          
+          </div>
+          <!--/.Card-->
 
-</body>
+        </div>
+        <!--Grid column-->
 
-</html>
+      
+
+      </div>
+      <!--Grid row-->
+
+    </div>
+  </main>
+{% endblock mainContent %}
+
+

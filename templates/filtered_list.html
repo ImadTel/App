@@ -9,12 +9,12 @@
       <div class="col-lg-3 col-md-6 mb-4" >
 
         <!--Card-->
-        <div class="card">
+        <div class="card" style="min-height:410px !important;max-height:430px !important;">
 
           <!--Card image-->
           <div class="view overlay"  >
             <a href="{{item.get_absolute_url}}">
-            <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top"
+            <img src="{{item.alt_image}}" class="card-img-top"
               alt="product">
             
               <div class="mask rgba-white-slight"  ></div>
@@ -23,7 +23,7 @@
           <!--Card image-->
 
           <!--Card content-->
-          <div class="card-body text-center">
+          <div  class="card-body text-center d-flex flex-column justify-content-end">
             <!--Category & Title-->
             <a href="" class="grey-text">
               <h5>{{item.get_category_display}}</h5>

@@ -19,8 +19,8 @@
   <section class=" mt-4 mb-4">
 
     <!--Grid row-->
-    <div class="row wow fadeIn mt-4">
-        <div class="col-12">
+    <div class="row wow fadeIn mt-4 justify-content-center" >
+        <div class="col-9 mt-5">
 
 
               <h1>{% trans "Sign In" %}</h1>
@@ -35,9 +35,7 @@
               <div class="socialaccount_ballot">
 
                 <ul class="socialaccount_providers">
-                  <h3>
-                    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-                  </h3>
+                 
                   
                 </ul>
 
@@ -54,16 +52,46 @@
 
               <form class="login" method="POST" action="{% url 'account_login' %}">
                 {% csrf_token %}
-                {{ form.as_p }}
+
+
+
+                <p><label for="id_login" class="active">Username:</label>
+                   <input   class="form-control" type="text" name="login" placeholder="Username" autocomplete="username" maxlength="150" required="" id="id_login">
+                  </p>
+                <p><label for="id_password" class="active">Password:</label> 
+                  <input class="form-control"  type="password" name="password" placeholder="Password" autocomplete="current-password" required="" id="id_password">
+                </p>
+                <div class="form-check">
+                  <input class="form-check-input"  type="checkbox" name="remember" id="id_remember"><label  class="form-check-label" for="id_remember">Remember Me</label>
+                </div>
+
+               
+              
+              
+
+
                 {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"  />
                 {% endif %}
-                <a class="btn btn-secondary" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-                <a class="btn btn-warning" href="{% provider_login_url 'google' %}">login with google</a>
-                <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+                <div class="row justify-content-center">
+                  <a class="btn btn-secondary" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                  <a class="btn btn-warning" href="{% provider_login_url 'google' %}">login with google</a>
+                  <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+
+                </div>
+            
               </form>
             </div>
             </div>
           </section>
         </div>
 {% endblock %}
+
+
+
+
+
+
+
+
+

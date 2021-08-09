@@ -12,6 +12,7 @@ from .views import (checkout,productView,productDetail,
                     stripe_webhook,
                     response_with_category,
                     search,
+                    insert_comment,
                     )
 
 app_name = "ecommerce"
@@ -32,6 +33,7 @@ urlpatterns = [
         path('cancel/',cancel_payment,name='cancel_payment'),
         path('stripe/webhook/',stripe_webhook,name='stripe_webhook'),
         path('<category>/',response_with_category,name='response_with_category'),
-        path('search',search,name='search_products')
+        path('search',search,name='search_products'),
+        path('insert_comment',insert_comment,name="insert_comment")
             ]
 

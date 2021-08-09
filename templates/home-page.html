@@ -4,7 +4,9 @@
 
 
 {%block carousel%}
-<div class="mt-5 pt-4"></div>
+<div class="mt-5 pt-4">
+
+</div>
 {%endblock carousel %}
 
 
@@ -38,7 +40,7 @@
             </li>
             {% for k,v in categories %}
             <li class="nav-item"  >
-              <a class="nav-link"  id="{{v}}"  name="categories" href="/ecommerce/{{k}}"  >{{v}}</a>
+              <a class="nav-link"  id="{{v}}"  name="categories" href="/ecommerce/{{k}}/"  >{{v}}</a>
             </li>
             {%endfor%}
            
@@ -74,11 +76,11 @@
             <div class="col-lg-3 col-md-6 mb-4" >
   
               <!--Card-->
-              <div class="card">
+              <div class="card  "    style="min-height:410px !important;max-height:430px !important;" >
   
                 <!--Card image-->
-                <div class="view overlay"  >
-                  <img src="{{item.image.url}}" class="card-img-top"
+                <div class="view overlay "  >
+                  <img src="{{item.alt_image}}" class="card-img-top" style="min-height:60% !important;"
                     alt="product">
                   <a href="{{item.get_absolute_url}}">
                     <div class="mask rgba-white-slight"  ></div>
@@ -87,7 +89,8 @@
                 <!--Card image-->
   
                 <!--Card content-->
-                <div class="card-body text-center">
+				
+                <div class="card-body text-center d-flex flex-column justify-content-end">
                   <!--Category & Title-->
                   <a href="" class="grey-text">
                     <h5>{{item.get_category_display}}</h5>
@@ -117,6 +120,7 @@
                   </h4>
   
                 </div>
+				
                 <!--Card content-->
   
               </div>
@@ -186,6 +190,7 @@
   
   let ur = event.target.getAttribute('href')
   event.preventDefault()
+  console.log("here from front end")
   $.ajax({
      url: ur,
      data: {
@@ -194,8 +199,9 @@
      type: "GET",
      dataType : "html",
      success: function (data){
+	 
       cards = document.getElementById('products')
-      console.log(data)
+      
          cards.innerHTML=data;
          
      },

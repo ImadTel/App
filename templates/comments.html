@@ -1,0 +1,81 @@
+{%load get_range%}
+
+{%for comment in comments%}
+<div class="card p-3 mb-3 ">
+  <div class="d-flex justify-content-start align-items-start ">
+      <div class="user d-flex flex-row align-items-center mr-2">
+         <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle mr-2"> 
+         <span><small class="font-weight-bold text-primary">{{comment.user}}</small>
+        
+        </div>
+
+        <div class="user d-flex flex-row justify-content-start  pt-2 align-items-start" style="min-width: 70% !important;" >
+          <small class="font-weight-bold" style="word-break: break-all;word-wrap: break-word; overflow: hidden !important;"><p>{{comment.content}}</p></small> </span> 
+        </div>    
+         
+  </div>
+  <div class="action d-flex justify-content-between mt-2 align-items-center">
+      <div class="reply px-4"> <small></small> <span class="dots"></span> <small></small> <span class="dots"></span> <small></small> </div>
+      <div class="icons align-items-center">
+        <small class="ml-2 mr-3 ">{{comment.rating}}</small>
+        {% for i in comment.rating|get_range %}
+         <i class="fa fa-star text-warning"></i>
+        
+         {%endfor%}
+         <i class="fa fa-check-circle-o check-icon"></i> 
+      </div>
+      
+
+
+
+    
+  </div>
+</div>
+{%endfor%}
+{%if user.is_authenticated%}
+          <div class="card p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                    <div class="user d-flex flex-row align-items-center">
+                      <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle mr-1"> 
+                      <span><h5 class="font-weight-bold text-primary">{{user.username}}</h5>
+                        <small class="font-weight-bold"></small> </span> 
+                        <small class="d-flex justify-content-center pl-3 ml-3">   
+                          <fieldset class="rating p-2"> 
+                            <input type="radio" id="star5" name="rating" value="5" /><label class="full" for="star5" title="Awesome - 5 stars"></label> 
+                            <input type="radio" id="star4half" name="rating" value="4.5" /><label class="half" for="star4half" title="Pretty good - 4.5 stars"></label> 
+                            <input type="radio" id="star4" name="rating" value="4" /><label class="full" for="star4" title="Pretty good - 4 stars"></label> 
+                            <input type="radio" id="star3half" name="rating" value="3.5" /><label class="half" for="star3half" title="Meh - 3.5 stars"></label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label class="full" for="star3" title="Meh - 3 stars"></label> 
+                            <input type="radio" id="star2half" name="rating" value="2.5" /><label class="half" for="star2half" title="Kinda bad - 2.5 stars"></label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label class="full" for="star2" title="Kinda bad - 2 stars"></label> 
+                            <input type="radio" id="star1half" name="rating" value="1.5" /><label class="half" for="star1half" title="Meh - 1.5 stars"></label> 
+                            <input type="radio" id="star1" name="rating" value="1" /><label class="full" for="star1" title="Sucks big time - 1 star"></label> 
+                            <input type="radio" id="starhalf" name="rating" value="0.5" /><label class="half" for="starhalf" title="Sucks big time - 0.5 stars"></label>
+                            <input type="radio" class="reset-option" name="rating" value="reset" /> 
+                          </fieldset></small>
+                      </div>
+                  </div>
+
+                    <form method="POST" action="{% url 'ecommerce:insert_comment' %}">
+                      {%csrf_token %}
+                      <div class="action d-flex justify-content-end mt-2 align-items-center">
+                          
+                        <textarea class="form-control" id="comment" name="comment"  style="max-width: 95% !important;" rows="5"></textarea>
+                        <input type="hidden" id="myrating" name="myrating" class="myrating" value=0>
+                        <input type="hidden" id="product_id" name="product_id" class="product_id" value="{{object.id}}">
+
+                        <br>
+                        
+                    </div>
+
+                    <div class="action d-flex justify-content-center mt-2 align-items-center">
+                      <button type="submit" id="submit_comment" class="btn btn-secondary btn-block ml-4"  style="max-width: 30%;">send</button>
+                  </div>
+                    </form>
+
+          </div>
+
+            
+        </div>
+          
+          {%endif%}

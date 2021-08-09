@@ -8,6 +8,37 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
+
+	
+
+	
+
+
+  'facebook':
+       {'METHOD': 'oauth2',
+        'SCOPE': ['email','public_profile', 'user_friends'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time'],
+        'EXCHANGE_TOKEN': True,
+        #'LOCALE_FUNC': lambda request: 'kr_KR',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.4'}
+
+
+
+
+
 """
 
 from pathlib import Path
@@ -24,9 +55,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-o5=yf+sf!!as1*mwo$b-&ae0b56nd4@^24z6#wv0a_nvq#2^s#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['192.168.42.73', '127.0.0.1','localhost','www.testdomainetest.com']
+ALLOWED_HOSTS = ['192.168.42.73', '127.0.0.1','localhost','www.testdomainetest.com','imtelshop.herokuapp.com']
 
 
 # Application definition
@@ -42,7 +73,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
+   # 'allauth.socialaccount.providers.facebook',
 
     'django_celery_beat',
     'django_celery_results',
@@ -74,6 +105,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -120,26 +152,7 @@ SOCIALACCOUNT_PROVIDERS ={
         }
     },
 
-      'facebook':
-       {'METHOD': 'oauth2',
-        'SCOPE': ['email','public_profile', 'user_friends'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'FIELDS': [
-            'id',
-            'email',
-            'name',
-            'first_name',
-            'last_name',
-            'verified',
-            'locale',
-            'timezone',
-            'link',
-            'gender',
-            'updated_time'],
-        'EXCHANGE_TOKEN': True,
-        #'LOCALE_FUNC': lambda request: 'kr_KR',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v2.4'}
+    
 }
 
 
@@ -151,10 +164,24 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+			
+	  # 	'default': {
+      # 'ENGINE': 'django.db.backends.sqlite3',
+      #  'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+	  #		}
+
+        	'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'df1i3u5crerru2',
+		'HOST': 'ec2-3-226-59-11.compute-1.amazonaws.com',
+		'PORT':5432,
+		'USER' :'vemcvstxxjejoh',
+		'PASSWORD':'8b135d2544774fde95bb4f90b51c9e2c8c4446442ceb66d52d38442c80f84aaa',
+		
+   }
+	
+ 
+	
 }
 
 
@@ -200,12 +227,15 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Base url to serve media files
-MEDIA_URL = '/media/'
+#MEDIA_URL = '/static/'
+
 
 # Path where media is stored
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 
 LOGIN_REDIRECT_URL = '/ecommerce/'
@@ -213,7 +243,7 @@ LOGOUT_REDIRECT_URL = '/ecommerce/'
 
 
 
-SITE_ID = 2
+SITE_ID = 3
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -245,8 +275,8 @@ EMAIL_PORT = 587
 #EMAIL_HOST_USER 
 #EMAIL_HOST_PASSWORD  
 
-
-
-STRIPE_TEST_SECRET_KEY = ''
+STRIPE_TEST_SECRET_KEY = 'sk_test_51JClzSBYB6qd8ZUsoJRA8ZMbI7Y1eZJLSu9eHeWb9A9rIdVo73rwWv1by7sXTr1vqncwfdmDjfNpP8iIRYF3WV6O00zkpTQatK'
 
 WH_SECRET = ''
+
+

@@ -29,7 +29,8 @@ class Product(models.Model):
     price = models.FloatField(default=0)
     discout_price = models.FloatField(null=True,blank=True)
     label  = models.CharField(choices=LABELS,max_length=15)
-    image = models.ImageField(upload_to='products',blank=True,null=True)
+    image = models.ImageField(upload_to='static/products',blank=True,null=True)
+    alt_image= models.CharField(max_length=120,blank=True,null=True)
     slug = models.SlugField()
 
     def __str__(self):
@@ -123,7 +124,16 @@ class Comment(models.Model):
     content = models.CharField(max_length=500)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=CASCADE)
     product = models.ForeignKey(Product,on_delete=CASCADE)
-    rating = models.IntegerField(default=1,null=True,blank=True)
-
+    rating = models.FloatField(default=0,null=True,blank=True)
+    
     def __str__(self):
         return self.content  + ';  user: ' + self.user.username + '; product: ' + self.product.title
+
+
+class Image(models.Model):
+    product = models.ForeignKey(Product,on_delete=CASCADE,related_name='prod')
+    image=models.ImageField(upload_to='static/products')
+    alt_image= models.CharField(max_length=120,blank=True,null=True)
+    def __str__(self):
+        return self.product.title + '   ' + self.image.url 
+

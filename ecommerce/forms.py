@@ -3,6 +3,7 @@ from django.db.models import fields
 from django.forms.widgets import CheckboxInput, Widget
 from .models import Product
 from django_countries.fields import CountryField
+
 '''
  title = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
@@ -14,9 +15,8 @@ from django_countries.fields import CountryField
 '''
 
 PAYEMENT = (
-    ('pl','paypal'),
+    ('st','Stripe'),
     ('cr','credit cart'),
-    ('dc', 'debit cart')
 )
 
 
@@ -31,7 +31,6 @@ class productForm(forms.ModelForm):
 class CheckOutForm(forms.Form):
     street_adress = forms.CharField(widget=forms.TextInput(attrs={
         'class':'form-control',
-        
         'id':'street_adress',
         } ))
 
@@ -44,6 +43,7 @@ class CheckOutForm(forms.Form):
   
     country = CountryField(blank_label='(select country)').formfield(widget=forms.Select(attrs={
         'class':'custom-select d-block w-100',
+        'id' : 'country'
         
     }))
     zip = forms.CharField(widget=forms.TextInput(attrs={
@@ -58,3 +58,6 @@ class CheckOutForm(forms.Form):
 
     payment_options = forms.ChoiceField(widget=forms.RadioSelect,choices=PAYEMENT)
     
+	
+
+	

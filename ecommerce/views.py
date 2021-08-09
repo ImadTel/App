@@ -32,12 +32,19 @@ import stripe
 from django.conf import settings
 
 # Create your views here.
-from .models import Product,Order,OrderProduct
+from .models import Product,Order,OrderProduct,Image
 
 from django.http import HttpResponse
 
 from django.core import serializers
 from django.core.paginator import Paginator
+
+
+
+
+
+def landingView(request):
+    return render(request,'landingpage/index.html')
 
 
 
@@ -63,7 +70,7 @@ def products(request):
 class productView(ListView):
     model = Product
     template_name = "home-page.html"
-    paginate_by = 2
+    paginate_by = 10
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['productsNumber'] = 0
@@ -102,16 +109,25 @@ class productDetail(DetailView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['productsNumber'] = 0
-        print(context)
-        print('here')
+
+
         comments = Comment.objects.filter(product=context['object'])
+
         context['comments'] = comments
+
+        images = Image.objects.filter(product=context['object'])
+        context["images"] = images
+        print(images)
+
+
         if self.request.user.is_authenticated:
             ord =Order.objects.filter(user=self.request.user,ordered=False)
             if ord.exists():
                 productsInCart = ord[0].get_linked_products().count()
                 context['productsNumber'] = productsInCart
         return context
+    
+    
 
         
 
@@ -181,6 +197,8 @@ def add_to_cart(request,slug,**kwargs):
 
 
 
+	
+	
 
 def remove_from_cart(request,slug):
 
@@ -206,15 +224,14 @@ def remove_from_cart(request,slug):
     
 
 
+	
 
 
 
 
 def cart_view(request):
     pro=Product.objects.all()
-    for p in pro:
-        print (p.get_add_one_to_cart_url())
-
+  
     context = {}
     if request.user.is_authenticated:
         
@@ -236,7 +253,6 @@ def cart_view(request):
         
 
 
-
 class update_view(UpdateView):
      model = Product
      template_name = 'update.html'
@@ -249,6 +265,7 @@ class update_view(UpdateView):
          context['categories']=dict(CATEGORIES)
          return context
 
+		 
 
 def remove_product_from_cart(request,slug):
     if request.user.is_authenticated:
@@ -264,10 +281,10 @@ def remove_product_from_cart(request,slug):
 
 
 
+		
 def checkout(request):
    # return HttpResponse(request,"checkout-page.html")
    return render(request,"checkout-page.html")
-
 
 
 
@@ -280,24 +297,28 @@ class Checkout_view(View):
             context= {
              'form':form
              }
+
+            adress_info = BillingAdress.objects.filter(user=self.request.user)
+           
+            if adress_info.exists():
+                context['adress_info'] = adress_info[0]
+
             return render(self.request,"checkout-page.html",context)
         else:
-            messages.add_message(self.request,messages.WARNING,"you are not authenticated")
+            messages.warning(self.request,"you are not authenticated")
             return redirect("ecommerce:home")
-
 
 
     def post(self,*args,**kwargs):
         form = CheckOutForm(self.request.POST or None)
-        print(self.request.POST)
+        
 
         if (self.request.user.is_authenticated):
             if form.is_valid():
                 order = Order.objects.get(user=self.request.user,ordered=False)
                 
                 
-                
-                
+               
                 street_adress = form.cleaned_data.get('street_adress')
                 apartment  = form.cleaned_data.get('apartment')
                 country = form.cleaned_data.get('country')
@@ -305,8 +326,7 @@ class Checkout_view(View):
                 same_billing_adress = form.cleaned_data.get('same_billing_adress')
                 save_info = form.cleaned_data.get('save_info')
                 payment_options = form.cleaned_data.get('payment_options')
-                
-                
+
                 billing_adress = BillingAdress(order=order, user=order.user,
                 street_Adress=street_adress,
                 apartment=apartment,
@@ -314,6 +334,7 @@ class Checkout_view(View):
                 zip=zipe
 
                 )
+
                   # if user has already a saved adress we update it  
               
                 bilAd=BillingAdress.objects.filter(order=order)
@@ -332,9 +353,9 @@ class Checkout_view(View):
                      messages.success(self.request,"your adress has been saved")   
                      billing_adress.save()
                     
-                print(same_billing_adress)
-                YOUR_DOMAIN = 'http://127.0.0.1/ecommerce'
-
+                
+                YOUR_DOMAIN = 'https://imtelshop.herokuapp.com/ecommerce'
+               
                 
                 order = Order.objects.get(user=self.request.user, ordered=False) 
                 print(order)
@@ -343,9 +364,7 @@ class Checkout_view(View):
                 items = []
                 for item in products:
 
-                    print (int(item.product.price*100))
-                    print (item.product.title)
-                    print (item.quantity)
+                
 
 
                     prod= {
@@ -382,9 +401,9 @@ class Checkout_view(View):
 
                 mode='payment',
 
-                success_url=YOUR_DOMAIN + '/success',
+                success_url=YOUR_DOMAIN + '/success/',
 
-                cancel_url=YOUR_DOMAIN + '/cancel',
+                cancel_url=YOUR_DOMAIN + '/cancel/',
 
                 )
    
@@ -398,6 +417,7 @@ class Checkout_view(View):
 class PayementView(View):
 
     def get(self,*args,**kwargs):
+
 
         return render(self.request,'payment.html')
 
@@ -415,8 +435,8 @@ stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 class CreateCheckoutSession(View):
 
     def post(self,*args,**kwargs):
-        YOUR_DOMAIN = 'http://127.0.0.1/ecommerce'
-
+        YOUR_DOMAIN = 'https://imtelshop.herokuapp.com/ecommerce'
+        
         user_id=self.request.POST["user"]
         order = Order.objects.get(user__id=user_id, ordered=False) 
     
@@ -451,8 +471,7 @@ class CreateCheckoutSession(View):
 
             items.append(prod)
             
-        print(items)
-        
+
         checkout_session = stripe.checkout.Session.create(
 
             payment_method_types=['card'],
@@ -463,9 +482,9 @@ class CreateCheckoutSession(View):
 
             mode='payment',
 
-            success_url=YOUR_DOMAIN + '/success',
+            success_url=YOUR_DOMAIN + '/success/',
 
-            cancel_url=YOUR_DOMAIN + '/cancel',
+            cancel_url=YOUR_DOMAIN + '/cancel/',
 
         )
    
@@ -474,12 +493,20 @@ class CreateCheckoutSession(View):
 
 
 
+
+
 def success_payment(request,*args,**kwargs):
-     return render(request,'success.html')
+    
+    order = Order.objects.get(user=request.user,ordered=False)
+    order.ordered = True
+    order.save()
+ 
+    return render(request,'success.html',)
  
  
  
 def cancel_payment(request,*args,**kwargs):
+
      return render(request,'cancel.html')
 
 
@@ -538,10 +565,42 @@ def response_with_category(request,category):
     
     page_obj = paginator.get_page(page_number)
       
-    
-    context = {'is_paginated':True,'page_obj': page_obj,'object_list':qs}
+   
+    context = {'page_obj': page_obj,'object_list':qs}
     return render(request,'filtered_list.html',context)
 
 
 
+	
+	
+
+def insert_comment(request):
+    print(request)
+
+    
+    context={}
+    content = request.POST['comment']
+    rate = request.POST['myrating']
+    prod = request.POST['product_id']
+    
+
+    comment =  Comment();
+    if len(content)>500:
+        comment.content= content[0:500]
+    else:
+        comment.content= content[0:500]
+    
+    if float(rate)>0:
+        comment.rating=rate
+    
+    comment.user = request.user
+    comment.product = Product.objects.get(id=int(request.POST['product_id']))
+    comment.save()
+
+    print(content)
+    print(rate)
+    comments = Comment.objects.filter(product__id=request.POST['product_id'])
+    context["comments"] = comments
+   # return HttpResponse('<h2>hello</h2>')
+    return render(request,'comments.html',context)
     

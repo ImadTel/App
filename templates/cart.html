@@ -87,12 +87,8 @@
           <td colspan="6">
             <a class="btn btn-primary float-right ml-2" href="/ecommerce/" >Continue Shopping</a>
             <a class="btn btn-warning float-right" href="/ecommerce/checkout/" >Proceed to payement</a>
-            <form action="{% url 'ecommerce:create_checkout_session' %}" method="POST">
-                {%csrf_token%}
-              <input type="hidden" id="user" name="user" value="{{user.id}}" />
-              <button type="submit" class = "btn btn-success">Proceed to Payment</button>
-      
-            </form>
+
+
           </td>
             
           
